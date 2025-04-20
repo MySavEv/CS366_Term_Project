@@ -23,68 +23,58 @@ services:
     depends_on:
       - zookeeper
 
-  spring-app1:
-    image: openjdk:17
-    container_name: kafka-producer
-    restart: always
-    working_dir: /app
-    volumes:
-      - ./spring-app:/app
-    ports:
-      - "8080:8080"
-    command: ["java", "-jar", "/app/app.jar"]
-    depends_on:
-      - kafka
-      - mssql-server
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:sqlserver://mssql-server:1433;databaseName=mydatabase
-      SPRING_DATASOURCE_USERNAME: sa
-      SPRING_DATASOURCE_PASSWORD: MyStrong!Passw0rd
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      SPRING_KAFKA_CONSUMER_GROUP_ID: my-group
-      SPRING_KAFKA_PRODUCER_KEY_SERIALIZER: org.apache.kafka.common.serialization.StringSerializer
-      SPRING_KAFKA_PRODUCER_VALUE_SERIALIZER: org.apache.kafka.common.serialization.StringSerializer
-      SPRING_KAFKA_CONSUMER_KEY_DESERIALIZER: org.apache.kafka.common.serialization.StringDeserializer
-      SPRING_KAFKA_CONSUMER_VALUE_DESERIALIZER: org.apache.kafka.common.serialization.StringDeserializer
+  # spring-app1:
+  #   image: openjdk:17
+  #   container_name: kafka-producer
+  #   restart: always
+  #   working_dir: /app
+  #   volumes:
+  #     - ./spring-app:/app
+  #   ports:
+  #     - "8080:8080"
+  #   command: ["java", "-jar", "/app/app.jar"]
+  #   depends_on:
+  #     - kafka
+  #     - mssql-server
+  #   environment:
+  #     SPRING_DATASOURCE_URL: jdbc:sqlserver://mssql-server:1433;databaseName=mydatabase
+  #     SPRING_DATASOURCE_USERNAME: sa
+  #     SPRING_DATASOURCE_PASSWORD: MyStrong!Passw0rd
+  #     SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+  #     SPRING_KAFKA_CONSUMER_GROUP_ID: my-group
+  #     SPRING_KAFKA_PRODUCER_KEY_SERIALIZER: org.apache.kafka.common.serialization.StringSerializer
+  #     SPRING_KAFKA_PRODUCER_VALUE_SERIALIZER: org.apache.kafka.common.serialization.StringSerializer
+  #     SPRING_KAFKA_CONSUMER_KEY_DESERIALIZER: org.apache.kafka.common.serialization.StringDeserializer
+  #     SPRING_KAFKA_CONSUMER_VALUE_DESERIALIZER: org.apache.kafka.common.serialization.StringDeserializer
 
-  spring-app2:
-    image: openjdk:17
-    container_name: kafka-consumer
-    restart: always
-    working_dir: /app
-    volumes:
-      - ./spring-app:/app
-    ports:
-      - "8181:8181"
-    command: ["java", "-jar", "/app/consumer.jar"]
-    depends_on:
-      - kafka
-      - mssql-server
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:sqlserver://mssql-server:1433;databaseName=mydatabase
-      SPRING_DATASOURCE_USERNAME: sa
-      SPRING_DATASOURCE_PASSWORD: MyStrong!Passw0rd
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      SPRING_KAFKA_CONSUMER_GROUP_ID: my-group
-      SPRING_KAFKA_PRODUCER_KEY_SERIALIZER: org.apache.kafka.common.serialization.StringSerializer
-      SPRING_KAFKA_PRODUCER_VALUE_SERIALIZER: org.apache.kafka.common.serialization.StringSerializer
-      SPRING_KAFKA_CONSUMER_KEY_DESERIALIZER: org.apache.kafka.common.serialization.StringDeserializer
-      SPRING_KAFKA_CONSUMER_VALUE_DESERIALIZER: org.apache.kafka.common.serialization.StringDeserializer
+  # spring-app2:
+  #   image: openjdk:17
+  #   container_name: kafka-consumer
+  #   restart: always
+  #   working_dir: /app
+  #   volumes:
+  #     - ./spring-app:/app
+  #   ports:
+  #     - "8181:8181"
+  #   command: ["java", "-jar", "/app/consumer.jar"]
+  #   depends_on:
+  #     - kafka
+  #     - mssql-server
+  #   environment:
+  #     SPRING_DATASOURCE_URL: jdbc:sqlserver://mssql-server:1433;databaseName=mydatabase
+  #     SPRING_DATASOURCE_USERNAME: sa
+  #     SPRING_DATASOURCE_PASSWORD: MyStrong!Passw0rd
+  #     SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+  #     SPRING_KAFKA_CONSUMER_GROUP_ID: my-group
+  #     SPRING_KAFKA_PRODUCER_KEY_SERIALIZER: org.apache.kafka.common.serialization.StringSerializer
+  #     SPRING_KAFKA_PRODUCER_VALUE_SERIALIZER: org.apache.kafka.common.serialization.StringSerializer
+  #     SPRING_KAFKA_CONSUMER_KEY_DESERIALIZER: org.apache.kafka.common.serialization.StringDeserializer
+  #     SPRING_KAFKA_CONSUMER_VALUE_DESERIALIZER: org.apache.kafka.common.serialization.StringDeserializer
 
 
-  mssql-server:
-    image: mcr.microsoft.com/mssql/server:2019-CU16-ubuntu-20.04
-    container_name: mssql-server
-    restart: always
-    ports:
-      - "1433:1433"
-    environment:
-      ACCEPT_EULA: "Y"
-      SA_PASSWORD: "MyStrong!Passw0rd"
-      MSSQL_PID: "Express"
 
   kafdrop:
-    image: obsidiandynamics/kafdrop:latest
+    image: obsidiandynamics/kafdrop:4.0.2
     container_name: kafdrop
     restart: always
     ports:
@@ -93,8 +83,25 @@ services:
       KAFKA_BROKERCONNECT: kafka:9092
     depends_on:
       - kafka
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - 4500:8080
+  postgres:
+      image: postgres
+      container_name: postgres
+      restart: always
+      environment:
+        POSTGRES_USER: admin
+        POSTGRES_PASSWORD: myprassword
+        POSTGRES_DB: cs366
+      ports:
+        - "5432:5432"
+      volumes:
+        - ./data:/var/lib/postgresql/data
+  pgadmin:
+      image: dpage/pgadmin4
+      container_name: pgadmin
+      environment:
+        PGADMIN_DEFAULT_EMAIL: admin@admin.com  # Email สำหรับล็อกอิน PGAdmin
+        PGADMIN_DEFAULT_PASSWORD: admin         # รหัสผ่านสำหรับล็อกอิน PGAdmin
+      ports:
+        - "4500:80"                               # Mapping port 80 ของ PGAdmin ไปยัง host
+      depends_on:
+        - postgres
