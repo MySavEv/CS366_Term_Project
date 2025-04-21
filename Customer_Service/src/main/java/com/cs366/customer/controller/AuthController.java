@@ -13,8 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cs366.customer.dto.LoginRequest;
 import com.cs366.customer.dto.RegisterRequest;
+import com.cs366.customer.dto.UserEventPayload;
 import com.cs366.customer.model.User;
 import com.cs366.customer.service.AuthService;
+import com.cs366.customer.service.KafkaProducerService;
+import com.cs366.customer.service.UserService;
 import com.cs366.customer.utils.ResponseHandler;
 
 @RestController
@@ -24,10 +27,22 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
+    @Autowired
+    private KafkaProducerService kafkaService;
+
+    @Autowired
+    private UserService userService;
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest req) {
         try {
             String token = authService.login(req);
+            UserEventPayload payload = new UserEventPayload();
+            User user = userService.findById(authService.getProfileFromToken(token).getUser_id());
+            payload.setUserId(String.valueOf(user.getUser_id()));
+            payload.setEmail(user.getEmail());
+            payload.setFullName(user.getUsername());
+            kafkaService.sendUserLoggedInEvent(payload);
             return ResponseHandler.generateResponse("Login successful", true, Map.of("token", token));
         } catch (Exception e) {
             return ResponseHandler.generateResponse("Login failed", false, e.getMessage());
@@ -38,6 +53,12 @@ public class AuthController {
     public ResponseEntity<?> register(@RequestBody RegisterRequest req) {
         try {
             User user = authService.register(req);
+            UserEventPayload payload = new UserEventPayload();
+            payload.setUserId(String.valueOf(user.getUser_id()));
+            payload.setEmail(user.getEmail());
+            payload.setFullName(user.getUsername());
+            kafkaService.sendUserRegisteredEvent(payload);
+
             return ResponseHandler.generateResponse("User registered successfully", true, user);
         } catch (Exception e) {
             return ResponseHandler.generateResponse("Registration failed", false, e.getMessage());

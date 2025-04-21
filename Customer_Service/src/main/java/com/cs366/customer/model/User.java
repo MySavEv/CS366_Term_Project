@@ -24,6 +24,13 @@ public class User {
     }
     private String username;
     private String email;
+    private String fullname;
+    public String getFullname() {
+        return fullname;
+    }
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
+    }
     @JsonIgnore
     private String password;
     private String address;
