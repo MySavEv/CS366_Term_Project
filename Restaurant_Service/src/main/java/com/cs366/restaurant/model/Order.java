@@ -1,22 +1,33 @@
 package com.cs366.restaurant.model;
 
+import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+
 import java.time.LocalDateTime;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import java.util.List;
 
 @Entity
+@Table(name = "orders") // เปลี่ยนชื่อ table เพื่อหลีกเลี่ยง conflict กับคำสงวน
 public class Order {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long orderId;
+
+    @Column(nullable = false)
     private String userId;
+
     private String address;
     private String note;
     private String status;
+
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<OrderItem> items;
+
+    // Getter และ Setter
     public long getOrderId() {
         return orderId;
     }
@@ -63,5 +74,18 @@ public class Order {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public List<OrderItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<OrderItem> items) {
+        this.items = items;
+        if (items != null) {
+            for (OrderItem item : items) {
+                item.setOrder(this);
+            }
+        }
     }
 }
