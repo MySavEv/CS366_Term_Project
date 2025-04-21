@@ -18,7 +18,7 @@ services:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://203.131.216.195:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     depends_on:
       - zookeeper
@@ -84,24 +84,24 @@ services:
     depends_on:
       - kafka
   postgres:
-      image: postgres
-      container_name: postgres
-      restart: always
-      environment:
-        POSTGRES_USER: admin
-        POSTGRES_PASSWORD: myprassword
-        POSTGRES_DB: cs366
-      ports:
-        - "5432:5432"
-      volumes:
-        - ./data:/var/lib/postgresql/data
+    image: postgres
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: myprassword
+      POSTGRES_DB: cs366
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data:/var/lib/postgresql/data
   pgadmin:
-      image: dpage/pgadmin4
-      container_name: pgadmin
-      environment:
-        PGADMIN_DEFAULT_EMAIL: admin@admin.com  # Email สำหรับล็อกอิน PGAdmin
-        PGADMIN_DEFAULT_PASSWORD: admin         # รหัสผ่านสำหรับล็อกอิน PGAdmin
-      ports:
-        - "4500:80"                               # Mapping port 80 ของ PGAdmin ไปยัง host
-      depends_on:
-        - postgres
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com # Email สำหรับล็อกอิน PGAdmin
+      PGADMIN_DEFAULT_PASSWORD: admin # รหัสผ่านสำหรับล็อกอิน PGAdmin
+    ports:
+      - "4500:80" # Mapping port 80 ของ PGAdmin ไปยัง host
+    depends_on:
+      - postgres
