@@ -58,8 +58,9 @@ public class AuthController {
             User user = authService.register(req);
             UserEventPayload payload = new UserEventPayload();
             payload.setUserId(String.valueOf(user.getUser_id()));
+            payload.setUsername(user.getUsername());
             payload.setEmail(user.getEmail());
-            payload.setFullName(user.getUsername());
+            payload.setFullName(user.getFullname());
             kafkaService.sendUserRegisteredEvent(payload);
 
             return ResponseHandler.generateResponse("User registered successfully", true, user);

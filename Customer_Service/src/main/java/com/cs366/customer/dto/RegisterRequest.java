@@ -4,6 +4,7 @@ package com.cs366.customer.dto;
 public class RegisterRequest {
     private String username;
     private String email;
+    private String fullname;
     private String password;
     private String address;
     private String phoneNumber;
@@ -36,5 +37,11 @@ public class RegisterRequest {
     }
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+    public String getFullname() {
+        return fullname;
+    }
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
     }
 }
