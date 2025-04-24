@@ -16,6 +16,7 @@ import com.cs366.customer.dto.RegisterRequest;
 import com.cs366.customer.dto.UserEventPayload;
 import com.cs366.customer.model.User;
 import com.cs366.customer.service.AuthService;
+import com.cs366.customer.service.JWTService;
 import com.cs366.customer.service.KafkaProducerService;
 import com.cs366.customer.service.UserService;
 import com.cs366.customer.utils.ResponseHandler;
@@ -42,6 +43,8 @@ public class AuthController {
             payload.setUserId(String.valueOf(user.getUser_id()));
             payload.setEmail(user.getEmail());
             payload.setFullName(user.getUsername());
+
+            System.out.println(authService.getProfileFromToken(token));
             kafkaService.sendUserLoggedInEvent(payload);
             return ResponseHandler.generateResponse("Login successful", true, Map.of("token", token));
         } catch (Exception e) {
