@@ -13,15 +13,16 @@ import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
+import com.cs366.restaurant.event.OrderDetailEvent;
+
 @Configuration
 public class KafkaConsumerConfig {
 
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
-    //ต้องแก้
     @Bean
-    public ConsumerFactory<String, Object> consumerFactory() {
+    public ConsumerFactory<String, OrderDetailEvent> orderFactory() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "user-group");
@@ -32,15 +33,15 @@ public class KafkaConsumerConfig {
         return new DefaultKafkaConsumerFactory<>(
             props,
             new StringDeserializer(),
-            new JsonDeserializer<>(Object.class)
+            new JsonDeserializer<>(OrderDetailEvent.class)
         );
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, Object> factory =
+    public ConcurrentKafkaListenerContainerFactory<String, OrderDetailEvent> orderDetailKafkaListenerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, OrderDetailEvent> factory =
             new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory());
+        factory.setConsumerFactory(orderFactory());
         return factory;
     }
 }
