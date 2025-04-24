@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class KafkaProducerService {
     private final KafkaTemplate<String, String> kafkaTemplate;
-    private final ObjectMapper objectMapper;
+    private final KafkaTemplate<String, Object> kafkaJsonTemplate;
 
     public void sendUserRegisteredEvent(UserEventPayload payload) {
         sendEvent("user.registered", payload);
@@ -31,9 +31,8 @@ public class KafkaProducerService {
             payload.setEventTime(Instant.now().toString());
             payload.setEventType(topic);
 
-            String message = objectMapper.writeValueAsString(payload);
-            kafkaTemplate.send(topic, message);
-            log.info("✅ Sent event to Kafka: topic={} userId={}", topic, payload.getUserId());
+            kafkaJsonTemplate.send(topic, payload);
+            log.info("✅ Sent event to Kafka: topic={} userId={}", topic, payload);
 
         } catch (Exception e) {
             log.error("❌ Failed to send Kafka event to topic={}", topic, e);

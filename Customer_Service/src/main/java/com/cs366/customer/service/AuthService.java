@@ -42,7 +42,7 @@ public class AuthService {
     }
 
     public User getProfileFromToken(String token) {
-        // ตรวจสอบ token และดึงข้อมูล userId
+        //ตรวจสอบ token และดึงข้อมูล userId
         if (jwtService.validateToken(token)) {
             Long userId = jwtService.extractUserId(token);
             return userRepository.findById(userId)
