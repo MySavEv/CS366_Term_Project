@@ -1,29 +1,21 @@
-package main.java.com.cs366.notification;
+package com.cs366.notification.kafka;
 
-import main.java.com.cs366.notification.service.NotiService;
+
+import org.springframework.kafka.annotation.KafkaListener;
+
+import com.cs366.notification.event.UserEventPayload;
+import com.cs366.notification.service.NotiService;
 
 public class KafkaConsumer {
-    @KafkaListener(topics = "OrderCreate", groupId = "2")
-    public void orderCreate(String message) {
+    @KafkaListener(topics = "user.registered")
+    public void userRegister(UserEventPayload payload) {
         // Print statement
-        NotiService.sendNoti(message);
+        NotiService.sendNoti(payload.getFullName() + "Registered");
     }
 
-    @KafkaListener(topics = "OrderPaid", groupId = "2")
-    public void OrderPaid(String message) {
+    @KafkaListener(topics = "user.registered")
+    public void userLogin(UserEventPayload payload) {
         // Print statement
-        NotiService.sendNoti(message);
-    }
-
-    @KafkaListener(topics = "OrderReady", groupId = "2")
-    public void OrderReady(String message) {
-        // Print statement
-        NotiService.sendNoti(message);
-    }
-
-    @KafkaListener(topics = "OrderDelivered", groupId = "2")
-    public void OrderDelivered(String message) {
-        // Print statement
-        NotiService.sendNoti(message);
+        NotiService.sendNoti(payload.getFullName() + "Login!");
     }
 }
