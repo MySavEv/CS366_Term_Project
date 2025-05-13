@@ -1,4 +1,4 @@
-package com.cs366.customer.dto;
+package com.cs366.notification.event;
 
 import lombok.Data;
 
