@@ -16,6 +16,7 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 import com.cs366.notification.event.OrderDetailEvent;
+import com.cs366.notification.event.PaymentEvent;
 import com.cs366.notification.event.RiderAssignedEvent;
 import com.cs366.notification.event.RiderDeliveredFoodEvent;
 import com.cs366.notification.event.RiderPickedUpFoodEvent;
@@ -87,7 +88,7 @@ public class KafkaConsumerConfig {
         return factory;
     }
 
-        @Bean
+    @Bean
     public ConcurrentKafkaListenerContainerFactory<String, OrderDetailEvent> orderDetailToChefKafkaListenerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, OrderDetailEvent> factory =
             new ConcurrentKafkaListenerContainerFactory<>();
@@ -95,6 +96,18 @@ public class KafkaConsumerConfig {
             props,
             new StringDeserializer(),
             new JsonDeserializer<>(OrderDetailEvent.class)
+        ));
+        return factory;
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, PaymentEvent> paymentKafkaListenerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, PaymentEvent> factory =
+            new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(new DefaultKafkaConsumerFactory<>(
+            props,
+            new StringDeserializer(),
+            new JsonDeserializer<>(PaymentEvent.class)
         ));
         return factory;
     }
