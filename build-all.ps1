@@ -1,29 +1,34 @@
-# Paths to your Maven projects
-$projects = @(
+$projectDirs = @(
     "Order_Service",
     "Payment_Service",
     "Restaurant_Service",
-    "Rider_Service",
-    "Notification-service"
+    "Notification-service",
+    "Rider_Service"
 )
 
-$jobs = @()
+foreach ($dir in $projectDirs) {
+    Write-Host "nBuilding project in '$dir'..." -ForegroundColor Cyan
 
-# Start mvnw build for each project in a background job
-foreach ($proj in $projects) {
-    $jobs += Start-Job -ScriptBlock {
-        param($p)
-        Write-Host "Building project at $p"
-        Set-Location -Path $p
+    Push-Location $dir
+
+    if (Test-Path "./mvnw") {
+
         ./mvnw clean package -DskipTests
-    } -ArgumentList $proj
+    } elseif (Test-Path "./mvnw.cmd") {
+        .\mvnw.cmd clean package -DskipTests
+    } else {
+        Write-Host "No mvnw or mvnw.cmd found in $dir. Skipping." -ForegroundColor Yellow
+    }
+
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "❌ Build failed in $dir" -ForegroundColor Red
+        Pop-Location
+        exit $LASTEXITCODE
+    } else {
+        Write-Host "✅ Build succeeded in $dir" -ForegroundColor Green
+    }
+
+    Pop-Location
 }
 
-# Wait for all background jobs to finish
-$jobs | ForEach-Object {
-    Wait-Job $_
-    Receive-Job $_
-    Remove-Job $_
-}
-
-Write-Host "✅ All builds completed."
+Write-Host "nAll projects built successfully." -ForegroundColor Green
