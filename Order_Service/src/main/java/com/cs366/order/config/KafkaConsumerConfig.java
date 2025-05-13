@@ -12,6 +12,7 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 import com.cs366.order.event.OrderCreatedEvent;
+import com.cs366.order.event.PaymentEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,26 +25,30 @@ public class KafkaConsumerConfig {
     private String bootstrapServers;
 
     @Bean
-    public ConsumerFactory<String, OrderCreatedEvent> orderFactory() {
+    public ConsumerFactory<String, PaymentEvent> paymentFactory() {
+        JsonDeserializer<PaymentEvent> deserializer = new JsonDeserializer<>(PaymentEvent.class);
+            deserializer.setRemoveTypeHeaders(false);
+            deserializer.addTrustedPackages("*");
+            deserializer.setUseTypeMapperForKey(true);
+
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "order-group");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-        props.put(JsonDeserializer.TRUSTED_PACKAGES, "com.cs366.restaurant.event"); // หรือระบุเฉพาะ package ที่ใช้งาน
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, deserializer.getClass());
 
         return new DefaultKafkaConsumerFactory<>(
             props,
             new StringDeserializer(),
-            new JsonDeserializer<>(OrderCreatedEvent.class)
+            deserializer
         );
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, OrderCreatedEvent> orderDetailKafkaListenerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, OrderCreatedEvent> factory =
+    public ConcurrentKafkaListenerContainerFactory<String, PaymentEvent> paymentKafkaListenerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, PaymentEvent> factory =
             new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(orderFactory());
+        factory.setConsumerFactory(paymentFactory());
         return factory;
     }
 

@@ -3,6 +3,7 @@ package com.cs366.order.service;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 import com.cs366.order.event.OrderCreatedEvent;
+import com.cs366.order.event.OrderDetailEvent;
 import com.cs366.order.model.Order;
 
 @Component
@@ -24,6 +25,12 @@ public class OrderProducer {
         oce.setTimestamp(null);
 
         kafkaTemplate.send("order_created", oce);
+
+    }
+
+    public void sendOrderDetail(OrderDetailEvent payload) {
+
+        kafkaTemplate.send("orderpaid", payload);
 
     }
 }
