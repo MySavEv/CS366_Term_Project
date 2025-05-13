@@ -65,22 +65,22 @@ public class OrderController {
     }
 
     @GetMapping("/status/{order_id}")
-public ResponseEntity<Map<String, Object>> getOrderStatus(@PathVariable("order_id") Long orderId) {
-    Optional<Order> orderOpt = orderRepository.findById(orderId);
+    public ResponseEntity<Map<String, Object>> getOrderStatus(@PathVariable("order_id") Long orderId) {
+        Optional<Order> orderOpt = orderRepository.findById(orderId);
 
-    if (orderOpt.isEmpty()) {
-        return ResponseEntity.badRequest().body(Map.of(
-                "status", "error",
-                "message", "Order not found"));
+        if (orderOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "status", "error",
+                    "message", "Order not found"));
+        }
+
+        Order order = orderOpt.get();
+
+        return ResponseEntity.ok(Map.of(
+                "status", "success",
+                "order_id", order.getOrderId(),
+                "current_status", order.getStatus()));
     }
-
-    Order order = orderOpt.get();
-
-    return ResponseEntity.ok(Map.of(
-            "status", "success",
-            "order_id", order.getOrderId(),
-            "current_status", order.getStatus()));
-}
 
     @PutMapping("/cancel/{order_id}")
     public ResponseEntity<Map<String, Object>> cancelOrder(@PathVariable("order_id") Long orderId) {
