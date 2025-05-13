@@ -14,7 +14,7 @@ public class OrderCreatedListener {
         this.processor = processor;
     }
 
-    @KafkaListener(topics = "order-events", groupId = "payment-service")
+    @KafkaListener(topics = "order_created", groupId = "payment-service")
     public void listen(OrderCreatedEvent event) {
         processor.processPayment(event);
     }
