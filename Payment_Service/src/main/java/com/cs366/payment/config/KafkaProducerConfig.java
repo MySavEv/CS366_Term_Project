@@ -1,6 +1,5 @@
 package com.cs366.payment.config;
 
-import com.cs366.payment.model.PaymentEvent;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
@@ -9,6 +8,8 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
+
+import com.cs366.payment.event.PaymentEvent;
 
 import java.util.HashMap;
 import java.util.Map;

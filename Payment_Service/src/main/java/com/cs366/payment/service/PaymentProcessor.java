@@ -1,8 +1,8 @@
 package com.cs366.payment.service;
 
 import com.cs366.payment.entity.Payment;
-import com.cs366.payment.model.OrderCreatedEvent;
-import com.cs366.payment.model.PaymentEvent;
+import com.cs366.payment.event.OrderCreatedEvent;
+import com.cs366.payment.event.PaymentEvent;
 import com.cs366.payment.repository.PaymentRepository;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;

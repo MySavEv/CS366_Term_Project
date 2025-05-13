@@ -1,16 +1,12 @@
-package com.cs366.payment.model;
+package com.cs366.payment.event;
 
 import java.time.LocalDateTime;
 
-public class PaymentEvent {
+public class OrderCreatedEvent {
     private String eventType;
     private String orderId;
-    private String paymentId;
     private double amount;
-    private String status;
-    private String reason;
     private LocalDateTime timestamp;
-    
 
     // Getters and setters
     public String getEventType() { return eventType; }
@@ -19,17 +15,8 @@ public class PaymentEvent {
     public String getOrderId() { return orderId; }
     public void setOrderId(String orderId) { this.orderId = orderId; }
 
-    public String getPaymentId() { return paymentId; }
-    public void setPaymentId(String paymentId) { this.paymentId = paymentId; }
-
     public double getAmount() { return amount; }
     public void setAmount(double amount) { this.amount = amount; }
-
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
-
-    public String getReason() { return reason; }
-    public void setReason(String reason) { this.reason = reason; }
 
     public LocalDateTime getTimestamp() { return timestamp; }
     public void setTimestamp(LocalDateTime timestamp) { this.timestamp = timestamp; }
