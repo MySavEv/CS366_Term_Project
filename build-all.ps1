@@ -3,7 +3,8 @@ $projectDirs = @(
     "Payment_Service",
     "Restaurant_Service",
     "Notification-service",
-    "Rider_Service"
+    "Rider_Service",
+    "Customer_Service"
 )
 
 foreach ($dir in $projectDirs) {
