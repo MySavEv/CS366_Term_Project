@@ -5,7 +5,6 @@ import java.util.List;
 
 public class OrderDetailEvent {
     private String orderId;
-    private String restaurantId;
     private String customerName;
     private List<OrderedItem> items;
     private LocalDateTime orderedAt;
@@ -36,9 +35,8 @@ public class OrderDetailEvent {
 
     public OrderDetailEvent() {}
 
-    public OrderDetailEvent(String orderId, String restaurantId, String customerName, List<OrderedItem> items, LocalDateTime orderedAt, String note) {
+    public OrderDetailEvent(String orderId, String customerName, List<OrderedItem> items, LocalDateTime orderedAt, String note) {
         this.orderId = orderId;
-        this.restaurantId = restaurantId;
         this.customerName = customerName;
         this.items = items;
         this.orderedAt = orderedAt;
@@ -47,9 +45,6 @@ public class OrderDetailEvent {
 
     public String getOrderId() { return orderId; }
     public void setOrderId(String orderId) { this.orderId = orderId; }
-
-    public String getRestaurantId() { return restaurantId; }
-    public void setRestaurantId(String restaurantId) { this.restaurantId = restaurantId; }
 
     public String getCustomerName() { return customerName; }
     public void setCustomerName(String customerName) { this.customerName = customerName; }

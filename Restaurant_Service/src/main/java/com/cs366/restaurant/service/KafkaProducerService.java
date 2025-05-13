@@ -23,7 +23,6 @@ public class KafkaProducerService {
 
     public void sendMockOrder() {
         OrderDetailEvent mockEvent = new OrderDetailEvent("10",
-            "resto-001",
             "Save",
             List.of(
                 new OrderedItem("menu-101", "ผัดกระเพรา", 2),
