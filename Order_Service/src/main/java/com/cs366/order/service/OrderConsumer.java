@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import com.cs366.order.event.OrderDetailEvent;
 import com.cs366.order.event.OrderDetailEvent.OrderedItem;
 import com.cs366.order.event.PaymentEvent;
+import com.cs366.order.event.RiderAssignedEvent;
 import com.cs366.order.model.Order;
 import com.cs366.order.repository.OrderRepository;
 
@@ -26,15 +27,20 @@ public class OrderConsumer {
         this.orderRepository = orderRepository;
     }
 
-    @Transactional
     @KafkaListener(topics = "payment-events", containerFactory = "paymentKafkaListenerFactory")
     public void payment(PaymentEvent event) {
+        producer.findingRider(event.getOrderId());
+    }
+
+    @Transactional
+    @KafkaListener(topics = "rider-assigned",containerFactory = "assignRiderKafkaListenerFactory")
+    public void afterAssignRider(RiderAssignedEvent event){
         Long orderId = (long) Integer.parseInt(event.getOrderId());
         Optional<Order> oorder = orderRepository.findById(orderId);
 
         if(oorder.isPresent()){
             Order upOrder = oorder.get();
-            upOrder.setStatus("orderpaid");
+            upOrder.setStatus("On The Way");
             orderRepository.save(upOrder);
 
             OrderDetailEvent ode = new OrderDetailEvent();

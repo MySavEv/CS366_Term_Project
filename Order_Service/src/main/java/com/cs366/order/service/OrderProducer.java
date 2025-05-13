@@ -10,9 +10,11 @@ import com.cs366.order.model.Order;
 public class OrderProducer {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final KafkaTemplate<String,String> kafkaStringTemplate;
 
-    public OrderProducer(KafkaTemplate<String, Object> kafkaTemplate) {
+    public OrderProducer(KafkaTemplate<String, Object> kafkaTemplate,KafkaTemplate<String,String> kafkaStringTemplate) {
         this.kafkaTemplate = kafkaTemplate;
+        this.kafkaStringTemplate = kafkaStringTemplate;
     }
 
     public void sendOrderCreated(Order order) {
@@ -28,9 +30,14 @@ public class OrderProducer {
 
     }
 
-    public void sendOrderDetail(OrderDetailEvent payload) {
+    public void findingRider(String orderid) {
 
-        kafkaTemplate.send("orderpaid", payload);
+        kafkaStringTemplate.send("orderpaid", orderid);
+
+    }
+
+    public void sendOrderDetail(OrderDetailEvent payload) {
+        kafkaTemplate.send("orderdetail", payload);
 
     }
 }

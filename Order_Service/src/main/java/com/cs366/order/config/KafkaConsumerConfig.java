@@ -11,8 +11,8 @@ import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
-import com.cs366.order.event.OrderCreatedEvent;
 import com.cs366.order.event.PaymentEvent;
+import com.cs366.order.event.RiderAssignedEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,6 +49,34 @@ public class KafkaConsumerConfig {
         ConcurrentKafkaListenerContainerFactory<String, PaymentEvent> factory =
             new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(paymentFactory());
+        return factory;
+    }
+
+    @Bean
+    public ConsumerFactory<String, RiderAssignedEvent> riderAssignFactory() {
+        JsonDeserializer<RiderAssignedEvent> deserializer = new JsonDeserializer<>(RiderAssignedEvent.class);
+            deserializer.setRemoveTypeHeaders(false);
+            deserializer.addTrustedPackages("*");
+            deserializer.setUseTypeMapperForKey(true);
+
+        Map<String, Object> props = new HashMap<>();
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, "order-group");
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, deserializer.getClass());
+
+        return new DefaultKafkaConsumerFactory<>(
+            props,
+            new StringDeserializer(),
+            deserializer
+        );
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, RiderAssignedEvent> assignRiderKafkaListenerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, RiderAssignedEvent> factory =
+            new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(riderAssignFactory());
         return factory;
     }
 
