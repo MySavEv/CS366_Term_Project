@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.cs366</groupId>
-	<artifactId>customer</artifactId>
+	<artifactId>restaurant</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>customer</name>
+	<name>restaurant</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>
@@ -89,7 +89,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>customer-service</finalName>
+		<finalName>restaurant-service</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
