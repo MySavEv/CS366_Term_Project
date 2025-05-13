@@ -12,7 +12,7 @@ public class OrderPaidListener {
 
     
 
-    @KafkaListener(topics = "orderpaid", groupId = "rider-group", containerFactory = "kafkaListenerContainerFactory")
+    @KafkaListener(topics = "orderpaid", groupId = "rider-group", containerFactory = "assignRiderKafkaListenerFactory")
     public void handleOrderPaid(String message) {
         System.out.println("📦 Received OrderPaid Event: Order ID " + message);
 

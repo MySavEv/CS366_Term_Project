@@ -10,8 +10,11 @@ import com.cs366.rider.dto.RiderPickedUpFoodEvent;
 @Service
 public class RiderService {
 
-    @Autowired
     private RiderEventProducer eventProducer;
+
+    RiderService(RiderEventProducer eventProducer){
+        this.eventProducer = eventProducer;
+    }
 
     // จำลองการหาไรเดอร์
     public void assignRider(String orderId) {
