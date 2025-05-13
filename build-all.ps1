@@ -14,7 +14,7 @@ foreach ($proj in $projects) {
     $jobs += Start-Job -ScriptBlock {
         param($p)
         Write-Host "Building project at $p"
-        Set-Location $p
+        Set-Location -Path $p
         ./mvnw clean package -DskipTests
     } -ArgumentList $proj
 }
