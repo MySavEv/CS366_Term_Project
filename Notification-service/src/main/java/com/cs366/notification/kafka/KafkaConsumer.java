@@ -3,6 +3,7 @@ package com.cs366.notification.kafka;
 
 import org.springframework.kafka.annotation.KafkaListener;
 
+import com.cs366.notification.event.OrderDetailEvent;
 import com.cs366.notification.event.RiderAssignedEvent;
 import com.cs366.notification.event.RiderDeliveredFoodEvent;
 import com.cs366.notification.event.RiderPickedUpFoodEvent;
@@ -40,5 +41,9 @@ public class KafkaConsumer {
         NotiService.sendNoti(payload.getRiderId() + "Login!");
     }
 
-
+    @KafkaListener(topics = "noti.orderdetail", containerFactory = "riderPickedKafkaListenerFactory")
+    public void orderDetailToChef(OrderDetailEvent payload) {
+        // Print statement
+        NotiService.sendNoti(payload.getNote() + "Login!");
+    }
 }
