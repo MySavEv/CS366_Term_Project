@@ -44,7 +44,7 @@ public class KafkaConsumerService {
         kafkaProducerService.sendNotiChefEvent(payload);
 
         //ทำเสร็จเลย ไม่ต้องรอทำจริง demo
-        kafkaProducerService.sendFoodPreparedEvent(orderDetail.getOrderId());
+        kafkaProducerService.sendFoodPreparedEvent(String.valueOf(orderDetail.getOrderId()));
 
     }
 }
