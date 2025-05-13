@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
-import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
@@ -23,27 +22,30 @@ public class KafkaConsumerConfig {
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
-    @Bean
-    public ConsumerFactory<String, OrderDetailEvent> orderFactory() {
+    private Map<String, Object> consumerConfigs(JsonDeserializer<?> des) {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "rest-group");
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, "noti-group");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-        props.put(JsonDeserializer.TRUSTED_PACKAGES, "com.cs366.restaurant.event"); // หรือระบุเฉพาะ package ที่ใช้งาน
-
-        return new DefaultKafkaConsumerFactory<>(
-            props,
-            new StringDeserializer(),
-            new JsonDeserializer<>(OrderDetailEvent.class)
-        );
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, des.getClass());
+        return props;
     }
 
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, OrderDetailEvent> orderDetailKafkaListenerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, OrderDetailEvent> factory =
-            new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(orderFactory());
+        JsonDeserializer<OrderDetailEvent> deserializer = new JsonDeserializer<>(OrderDetailEvent.class);
+        deserializer.setRemoveTypeHeaders(false);
+        deserializer.addTrustedPackages("*");
+        deserializer.setUseTypeMapperForKey(true);
+
+        ConcurrentKafkaListenerContainerFactory<String, OrderDetailEvent> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(
+            new DefaultKafkaConsumerFactory<>(
+                consumerConfigs(deserializer),
+                new StringDeserializer(),
+                deserializer
+            ));
         return factory;
     }
+
 }
