@@ -21,7 +21,7 @@ public class KafkaConsumerService {
 
     private final OrderDetailRepository detailRepository;
 
-    @KafkaListener(topics = "orderpaid",groupId = "rest-group", containerFactory = "orderDetailKafkaListenerFactory")
+    @KafkaListener(topics = "orderdetail",groupId = "rest-group", containerFactory = "orderDetailKafkaListenerFactory")
     public void consume(OrderDetailEvent payload) {
 
         OrderDetail orderDetail = new OrderDetail();
