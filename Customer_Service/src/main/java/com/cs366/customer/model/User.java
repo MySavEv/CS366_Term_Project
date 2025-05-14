@@ -16,19 +16,26 @@ public class User {
     @Column(name = "user_id", nullable = false, unique = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long user_id;
+    private String username;
+    private String email;
+    private String fullname;
+    @JsonIgnore
+    private String password;
+    private String address;
+    private String phonenumber;
+    
+    public String getFullname() {
+        return fullname;
+    }
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
+    }
     public long getUser_id() {
         return user_id;
     }
     public void setUser_id(long user_id) {
         this.user_id = user_id;
     }
-    private String username;
-    private String email;
-    @JsonIgnore
-    private String password;
-    private String address;
-    private String phonenumber;
-    
     public String getUsername() {
         return username;
     }

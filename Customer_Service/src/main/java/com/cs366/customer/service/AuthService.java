@@ -34,6 +34,7 @@ public class AuthService {
         User user = new User();
         user.setUsername(req.getUsername());
         user.setEmail(req.getEmail());
+        user.setFullname(req.getFullname());
         user.setAddress(req.getAddress());
         user.setPhoneNumber(req.getPhoneNumber());
         user.setPassword(req.getPassword());
@@ -42,7 +43,7 @@ public class AuthService {
     }
 
     public User getProfileFromToken(String token) {
-        // ตรวจสอบ token และดึงข้อมูล userId
+        //ตรวจสอบ token และดึงข้อมูล userId
         if (jwtService.validateToken(token)) {
             Long userId = jwtService.extractUserId(token);
             return userRepository.findById(userId)
